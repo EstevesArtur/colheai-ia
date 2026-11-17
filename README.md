@@ -98,8 +98,9 @@ curl -X POST http://localhost:5000/api/prever-risco -H "Content-Type: applicatio
 
 ## Links
 
-- API publicada (Render): `https://colheai-api-ia.onrender.com` *(confirmar após o deploy)*
-- Repositório: *(preencher após criar)*
+- API publicada (Render): https://colheai-api-ia.onrender.com
+  - exemplo: https://colheai-api-ia.onrender.com/api/municipio/3550308
+- Repositório (GitHub): https://github.com/EstevesArtur/colheai-ia
 
 O plano gratuito do Render hiberna após 15 minutos sem uso; a primeira chamada pode levar cerca de 50 segundos.
 
