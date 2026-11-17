@@ -1,0 +1,64 @@
+================================================================================
+COLHEAI - DADOS USADOS NOS MODELOS DE IA
+Since Young - 1TDSPV-2026 - GS 2026/2 - Artificial Intelligence & Chatbot
+Artur Bianchini Esteves RM569450 | Joao Vitor Oliveira Fontenele Martins RM570783
+================================================================================
+
+TODOS OS DADOS SAO PUBLICOS E REAIS. NENHUM VALOR FOI SIMULADO.
+Data de acesso: 17/11/2026.
+
+FONTES
+  FNDE - PNAE: Dados da Agricultura Familiar (2011 a 2022)
+    https://www.gov.br/fnde/pt-br/acesso-a-informacao/acoes-e-programas/programas/pnae/consultas/pnae-dados-da-agricultura-familiar
+    (painel Power BI publico; o script coleta_dados_publicos.py consulta a
+     mesma API publica que o painel usa, com filtro UF = SP)
+  IBGE - SIDRA (https://sidra.ibge.gov.br)
+    4714 Censo 2022: populacao, area, densidade
+    9923 Censo 2022: populacao por situacao do domicilio (urbana/rural)
+    5938 PIB dos Municipios 2021
+    6579 Estimativa de populacao 2021 (para o PIB per capita)
+    6778 Censo Agropecuario 2017: estabelecimentos, total e agricultura familiar
+  IBGE - API de localidades (regiao geografica intermediaria)
+    https://servicodados.ibge.gov.br/api/v1/localidades/estados/35/municipios
+
+PADRAO DOS ARQUIVOS (retorno da Sprint 3)
+  - separador de campo virgula, ponto decimal, UTF-8
+  - textos em MAIUSCULA, sem acento, com _ no lugar de espaco
+  - casas decimais fixas por coluna
+  - ausencia de valor = celula vazia (nunca NA, null, - ou zero)
+  - prefixos do banco: cd_ codigo, nm_ nome, qt_ quantidade, vl_ valor,
+    pc_ percentual (0 a 100), st_ situacao/rotulo
+
+ARQUIVO 1 - fnde_pnae_agricultura_familiar_sp_2011_2022.csv (7.396 linhas)
+  Um registro por municipio paulista e ano (esfera municipal).
+  ano, cd_ibge_municipio, nm_entidade_executora, vl_transferido (R$),
+  vl_aquisicao_af (R$), pc_aquisicao_af (% do repasse comprado da AF, sem teto),
+  st_codigo_ibge_corrigido (S = o FNDE trazia o codigo de um municipio homonimo
+  de outro estado e o codigo foi recuperado pelo nome; 94 linhas).
+
+ARQUIVO 2 - municipios_sp_base_bruta.csv (645 linhas, 1 por municipio)
+  Perfil (IBGE): qt_populacao_2022, vl_area_km2, vl_densidade_hab_km2,
+    qt_populacao_rural_2022, pc_populacao_rural_2022, vl_pib_per_capita_2021,
+    qt_estab_agro_total_2017, qt_estab_agro_familiar_2017,
+    qt_estab_af_por_mil_hab, nm_regiao_intermediaria
+  Historico FNDE, janela A (entrada do treino): vl_transferido_medio_2014_2016,
+    pc_aquisicao_af_media_2014_2016, qt_anos_sem_compra_af_2014_2016,
+    qt_anos_cumpriu_30_2011_2016
+  Historico FNDE, janela B (rotulo e entrada da API):
+    vl_transferido_medio_2017_2019, pc_aquisicao_af_media_2017_2019,
+    qt_anos_sem_compra_af_2017_2019, qt_anos_cumpriu_30_2014_2019
+  Rotulo: st_abaixo_meta_30_2017_2019 (1 = media 2017-2019 abaixo de 30%)
+  Teste fora do tempo: pc_aquisicao_af_2022_preliminar
+  Percentuais medios limitados a 100% (mesmo tratamento do MonitoraSAN/Consea).
+
+ARQUIVO 3 - municipios_sp_base_normalizada.csv (644 linhas)
+  Gerado pelo notebook: variaveis do modelo de risco depois de log10, mediana
+  nos ausentes, one-hot da regiao e Min-Max (todas entre 0 e 1), mais o rotulo.
+  O municipio sem dado do FNDE em 2017-2019 nao tem rotulo e fica de fora.
+
+AVISOS
+  - 2022 e PRELIMINAR segundo o FNDE; nao entra no treino.
+  - 2020 e 2021 foram anos de pandemia (compra atipica); nao entram no rotulo.
+  - O FNDE e o TCM-SP divergem para a cidade de Sao Paulo em 2018-2019; usamos
+    o FNDE, fonte unica para todos os municipios.
+================================================================================

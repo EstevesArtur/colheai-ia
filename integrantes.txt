@@ -1,0 +1,74 @@
+================================================================================
+GLOBAL SOLUTION 2026/2 - CITIZENTECH
+DISCIPLINA: ARTIFICIAL INTELLIGENCE & CHATBOT
+PROFESSOR: ALFONSO JOSE TRINDADE RODRIGUEZ
+================================================================================
+
+PROJETO ....... COLHEAI
+                Conecta a agricultura familiar a alimentacao escolar publica
+                (PNAE) e ajuda a prefeitura a cumprir a meta de 45% de compra
+                da agricultura familiar (Lei 15.226/2025).
+EMPRESA ....... SINCE YOUNG
+TURMA ......... 1TDSPV-2026
+CURSO ......... 1o ano de Analise e Desenvolvimento de Sistemas - FIAP
+
+--------------------------------------------------------------------------------
+INTEGRANTES
+--------------------------------------------------------------------------------
+  Artur Bianchini Esteves ................ RM569450 .... REPRESENTANTE
+  Joao Vitor Oliveira Fontenele Martins .. RM570783 .... Integrante
+
+--------------------------------------------------------------------------------
+ARQUIVOS E O QUE CADA UM ATENDE NA RUBRICA
+--------------------------------------------------------------------------------
+01 DADOS (10 pts) - pasta dados/
+   fnde_pnae_agricultura_familiar_sp_2011_2022.csv  base bruta FNDE, 7.396 linhas
+   municipios_sp_base_bruta.csv                     base bruta por municipio, 645 linhas
+   municipios_sp_base_normalizada.csv               base normalizada Min-Max 0 a 1
+   coleta_dados_publicos.py                         script que baixa os dados publicos
+   LEIA-ME_DADOS.txt                                fontes, data de acesso, dicionario
+
+02 NOTEBOOK (60 pts) - notebooks/ColheAi_IA_Modelos.ipynb (ja executado)
+   Secoes: 1 problema | 2 base | 3 EDA (4 perguntas) | 4 pre-processamento e
+   Min-Max | 5 treino/teste estratificado | 6 modelo 1: classificacao (Regressao
+   Logistica x Random Forest) | 7 modelo 2: K-Means (cotovelo + silhueta +
+   perfis) | 8 comparacao e avaliacao | 9 importancia das variaveis |
+   10 robustez (grupos de variaveis + teste fora do tempo) | 11 discussao |
+   12 serializacao + teste de recarga | 13 ponte com a aplicacao.
+
+03 MODELOS PRE-TREINADOS (10 pts) - pasta modelos/
+   modelo_risco_meta.joblib       Regressao Logistica + colunas + Min-Max +
+                                  medianas + regioes + metricas + 645 municipios
+   modelo_perfil_kmeans.joblib    K-Means (k = 4) + colunas + Min-Max + nomes
+                                  dos perfis + metricas
+
+04 API FLASK (20 pts) - pasta api/ + render.yaml
+   api_colheai_ia.py   carrega OS DOIS .joblib. Rotas:
+                       GET  /                         health check
+                       GET  /api/status               metricas dos 2 modelos
+                       POST /api/prever-risco         usa o modelo de risco
+                       POST /api/perfil-municipio     usa o K-Means
+                       GET  /api/municipio/<cd_ibge>  usa os dois
+   requirements.txt    scikit-learn pinado em 1.9.1 (versao do treino)
+   .env.example        variaveis de ambiente, sem valores (sem credenciais)
+
+--------------------------------------------------------------------------------
+EXPLICACOES ADICIONAIS
+--------------------------------------------------------------------------------
+- DADOS 100% PUBLICOS E REAIS: FNDE (PNAE - Dados da Agricultura Familiar,
+  2011-2022) e IBGE (Censo 2022, PIB dos Municipios 2021, Censo Agropecuario
+  2017), acessados em 17/11/2026. Nenhum dado simulado.
+- ROTULO: municipio com media de compra da agricultura familiar abaixo de 30%
+  em 2017-2019 (meta legal da epoca), previsto a partir do historico de
+  2014-2016 e do perfil do municipio. Para a meta de 45% o risco e um piso.
+- MODELO ESCOLHIDO PARA A API: Regressao Logistica. Empatou com o Random Forest
+  (F1 0,774 x 0,785; AUC 0,813 x 0,795; validacao cruzada dentro do desvio) e
+  e explicavel por coeficientes.
+- INTEGRACAO: a chave e o codigo IBGE (cd_ibge_municipio), o mesmo da tabela
+  T_CLH_ENTIDADE_EXECUTORA do banco Oracle e da API Java do projeto. O front
+  React consulta GET /api/municipio/<cd_ibge>.
+
+================================================================================
+Since Young - Turma 1TDSPV-2026 - FIAP
+Artur Bianchini Esteves RM569450 | Joao Vitor Oliveira Fontenele Martins RM570783
+================================================================================

@@ -1,0 +1,17 @@
+# Dependencias da API de IA do ColheAi - Since Young - 1TDSPV-2026 - FIAP
+# GS 2026/2 - Artificial Intelligence & Chatbot
+#
+# IMPORTANTE: a versao do scikit-learn esta PINADA porque os arquivos
+# modelos/modelo_risco_meta.joblib e modelos/modelo_perfil_kmeans.joblib foram
+# serializados com ela. Carregar com outra versao gera InconsistentVersionWarning
+# e pode mudar a previsao sem dar erro. Nao altere sem retreinar (rodar o notebook).
+#
+# Ambiente do treino: Python 3.13.18 | numpy 2.5.3 | pandas 3.0.5 | scikit-learn 1.9.1
+scikit-learn==1.9.1
+
+numpy>=2.0
+pandas>=2.2
+joblib>=1.5
+flask>=3.0
+flask-cors>=5.0
+gunicorn>=21.2

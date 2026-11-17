@@ -1,0 +1,27 @@
+# ==============================================================================
+# Publicacao da API de IA do ColheAi no Render
+# Since Young - GS 2026/2 - Artificial Intelligence & Chatbot - 1TDSPV-2026 - FIAP
+# ------------------------------------------------------------------------------
+# Runtime Python nativo do Render: nao precisa de Docker (diferente da API Java
+# de DDD). O comando roda a partir da raiz do repositorio; o --chdir entra na
+# pasta api/ e a API acha os modelos em ../modelos/.
+#
+# Health check em "/" e nao em "/api/status": "/" responde 200 mesmo se um
+# modelo falhar ao carregar. Se apontasse para /api/status (que devolve 503
+# nesse caso), o Render derrubaria o servico em vez de deixa-lo no ar
+# informando o problema.
+# ==============================================================================
+services:
+  - type: web
+    name: colheai-api-ia
+    runtime: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r api/requirements.txt
+    startCommand: gunicorn --chdir api api_colheai_ia:app --bind 0.0.0.0:$PORT
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13.4"
+      - key: CORS_ORIGENS
+        sync: false
